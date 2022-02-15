@@ -1,4 +1,4 @@
-package com.company;
+package E1;
 public class Metodos {
 
     public static int[] arrayRandom(int[] array, int max, int min){
@@ -81,23 +81,5 @@ public class Metodos {
         i++;
         }
         return delReves;
-    }
-
-    public static void main(String[] args) {
-        int[] array=new int[20];
-        //int[] array2=new int[20];
-        arrayRandom(array, 1001, 0);
-        array[15]=545;
-        //array2=delReves(array);
-        int pos=posicionArray(array, 545);
-        for (int i=0; i<20; i++) {
-            System.out.print(array[i]+"   ");
-        }
-        System.out.println();
-        System.out.println(pos);
-       /* System.out.println();
-        for (int i=0; i<20; i++) {
-            System.out.print(array2[i]+"   ");
-        }*/
     }
 }
