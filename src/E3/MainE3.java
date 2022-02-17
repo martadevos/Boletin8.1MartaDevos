@@ -6,62 +6,88 @@ public class MainE3 {
     public static Scanner s=new Scanner(System.in);
     public static void main(String[] args) {
         int[] asientos= new int[20];
-        int n=0;
-        for (int i=0; i<20; i++){
-            asientos[i]=0;
+        int libre=20, cant;
+        for (int i=1; i<21; i++) {
+            System.out.println("Se va a reservar un nuevo asiento para el vuelo");
+            boolean fuma = esFumador();
+            fuma = asientosLibres(asientos, fuma);
+            int lugar = asignarAsientos(asientos, fuma);
+            asientos[lugar]=1;
+            libre--;
         }
-        for (int lugar:asientos){
-            if (lugar==0){
-                System.out.print((n+1)+"  ");
-            }
-            n++;
+        if (libre==0){
+            System.out.println();
+            System.out.println("No hay sitios libres, el siguiente vuelo disponible es a las "+(int)(Math.random()*24)+":"+(int)(Math.random()*60)+" horas");
         }
-        asientosLibres(asientos);
     }
     public static boolean esFumador(){
-        Scanner s=new Scanner(System.in);
-        System.out.println("Introduzca 1 si desea sentarse en fumadores y 0 si desea sentarse en no fumadores");
+        System.out.println("Introduzca 1 si desea sentarse en fumadores y otro número para no fumadores");
         return s.nextInt()==1;
     }
-    public static void asientosLibres(int[] asientos){
+    public static boolean asientosLibres(int[] asientos, boolean fuma){
         int sitios=0;
         boolean libre=false;
         System.out.println("Los asientos libres son:");
         for (int veces=0; veces<2&&!libre; veces++){
-            if (esFumador()) {
+            if (fuma) {
                 for (int lugar = 16; lugar > 15 && lugar < 20; lugar++) {
-                    sitios=comprobarAsientos(asientos[lugar], lugar);
-                    int sitios=0;
-                    System.out.print((lugar + 1) + "  ");
-                    sitios++;
-                    return sitios;
+                    sitios=escribirAsientos(asientos, lugar, sitios);
                 }
             } else {
                 for (int lugar = 0; lugar < 16; lugar++) {
-                    sitios=comprobarAsientos(asientos[lugar], lugar);
+                    sitios=escribirAsientos(asientos, lugar, sitios);
                 }
             }
             if (sitios>0) {
                 libre=true;
             }else {
+                System.out.println();
                 System.out.println("No hay sitios libres en esta categoría");
+                fuma=esFumador();
             }
         }
-        if (libre){
-            System.out.println("No hay sitios libres, elija otro vuelo");
-        }
+        return  fuma;
     }
-    public static boolean comprobarAsientos(int asiento){
+    public static int escribirAsientos(int[] asientos, int lugar, int sitios){
+        if (comprobarAsientoLibre(asientos[lugar])) {
+            System.out.print((lugar + 1) + "  ");
+            sitios++;
+        }
+        return sitios;
+    }
+    public static boolean comprobarAsientoLibre(int asiento){
         return asiento == 0;
     }
-    public static void asignarAsientos(){
-        int asiento, asientoIntr;
-        System.out.println("Introduzca el asiento que desea ");
-        asientoIntr=s.nextInt();
-        if (comprobarAsientos(asientoIntr)){
-            asiento=asientoIntr;
-        }else {
-            System.out.println("");
+    public static int asignarAsientos(int[] asiento, boolean fuma){
+        int lugarIntr=0;
+        boolean seguir=true;
+        while (seguir) {
+            System.out.println("Introduzca el asiento que desea ");
+            lugarIntr=s.nextInt()-1;
+            if (fuma && lugarIntr>15 && lugarIntr<20) {
+                if (asientoCorrecto(asiento, lugarIntr)){
+                    seguir=false;
+                }
+            }else  if (fuma && lugarIntr<15 || lugarIntr>20){
+                System.out.println("El asiento no es correcto");
+            }
+            if (!fuma && lugarIntr>-1 && lugarIntr<=15) {
+                if (asientoCorrecto(asiento, lugarIntr)){
+                    seguir=false;
+                }
+            }else  if (!fuma && lugarIntr<-1 || lugarIntr>15){
+                System.out.println("El asiento no es correcto");
+            }
+        }
+        return lugarIntr;
+    }
+    public static boolean asientoCorrecto(int[] asiento, int lugarIntr){
+        if (comprobarAsientoLibre(asiento[lugarIntr])) {
+            return true;
+        } else {
+            System.out.println("ese asiento no está disponible, elija otro");
+            return false;
         }
     }
+
 }
